@@ -8,6 +8,7 @@ class Portfolio(models.Model):
 
 # Public
 class Market(models.Model):
+    name = models.CharField(max_length=256)
     b = models.FloatField(default=0.0)
     number_of_outcomes = models.IntegerField(default=1)
     start_date = models.DateTimeField('start date')
