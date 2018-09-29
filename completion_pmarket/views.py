@@ -11,3 +11,18 @@ def index(request):
         'markets_list': markets_list,
     }
     return HttpResponse(template.render(context, request))
+
+def portfolio(request):
+    pass
+
+def market(request):
+    pass
+
+def outcome(request):
+    pass
+
+def position(request):
+    pass
+
+def order(request):
+    pass
