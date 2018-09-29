@@ -1,0 +1,9 @@
+{% if markets_list %}
+    <ul>
+    {% for market in markets_list %}
+        <li>{{ market.name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No markets are available.</p>
+{% endif %}
