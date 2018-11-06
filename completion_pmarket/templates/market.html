@@ -1,4 +1,5 @@
 {% if outcomes_list %}
+    <a href="/">index</a>
     <ul>
     {% for outcome in outcomes_list %}
         <li>{{ outcome.market.name }} : {{ outcome.outcome_date }} : P = {{ outcome.probability }}</li>

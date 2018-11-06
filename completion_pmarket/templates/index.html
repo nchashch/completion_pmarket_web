@@ -1,7 +1,7 @@
 {% if markets_list %}
     <ul>
     {% for market in markets_list %}
-        <li>{{ market.name }}</li>
+        <li><a href="/market?m={{ market.id }}"> {{ market.name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
