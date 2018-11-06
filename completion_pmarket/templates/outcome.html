@@ -1,0 +1,9 @@
+<h1><a href="/">Markets</a></h1>
+{% if outcome %}
+    <p>Market: {{ outcome.market.name }}</p>
+    <p>Outcome date: {{ outcome.outcome_date }}</p>
+    <p>Outstanding: {{ outcome.outstanding }}</p>
+    <p>Probability: {{ outcome.probability }}</p>
+{% else %}
+    <p>Outcome doesn't exist.</p>
+{% endif %}

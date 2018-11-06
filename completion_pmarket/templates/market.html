@@ -7,7 +7,7 @@
     <p>End date: {{ market.end_date }}</p>
     <ul>
     {% for outcome in outcomes_list %}
-        <li><a href="/market?m={{ market.pk }}">{{ outcome.outcome_date }} : {{ outcome.outstanding }} : P = {{ outcome.probability }}</a></li>
+        <li><a href="/outcome?pk={{ outcome.pk }}">{{ outcome.outcome_date }} : {{ outcome.outstanding }} : P = {{ outcome.probability }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
