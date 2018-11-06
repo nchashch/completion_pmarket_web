@@ -1,9 +1,13 @@
-<a href="/">index</a>
+<h1><a href="/">Markets</a></h1>
 {% if outcomes_list %}
     <h1>{{ market.name }}</h1>
+    <p>b: {{ market.b }}</p>
+    <p>Number of outcomes: {{ market.number_of_outcomes }}</p>
+    <p>Start date: {{ market.start_date }}</p>
+    <p>End date: {{ market.end_date }}</p>
     <ul>
     {% for outcome in outcomes_list %}
-        <li>{{ outcome.outcome_date }} : P = {{ outcome.probability }}</li>
+        <li><a href="/market?m={{ market.pk }}">{{ outcome.outcome_date }} : {{ outcome.outstanding }} : P = {{ outcome.probability }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
