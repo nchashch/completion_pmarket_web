@@ -16,8 +16,10 @@ def portfolio(request):
     pass
 
 def market(request):
-    market = request.GET['market']
-    outcomes_list = Outcome.objects.order_by('-outcome_date')
+    outcomes_list = []
+    if request.GET:
+        market = request.GET['m']
+        outcomes_list = Outcome.objects.order_by('-outcome_date').filter(market=market)
     template = loader.get_template('market.html')
     context = {
         'outcomes_list': outcomes_list,
