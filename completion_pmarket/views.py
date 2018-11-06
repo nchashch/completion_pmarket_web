@@ -3,8 +3,16 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from .models import Market, Outcome
+from datetime import datetime
 
-# Create your views here.
+def create_market(name, b, number_of_outcomes, start_date, end_date):
+    market = Market(name = name, b = b, number_of_outcomes = number_of_outcomes, start_date = start_date, end_date = end_date)
+    market.save()
+    for _ in range(number_of_outcomes):
+        P = 1/number_of_outcomes
+        outcome = Outcome(market = market, outcome_date = datetime.now(), outstanding = 0, probability = P)
+        outcome.save()
+
 def index(request):
     markets_list = Market.objects.order_by('-start_date')[:5]
     template = loader.get_template('index.html')
