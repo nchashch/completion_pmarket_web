@@ -18,6 +18,8 @@ def portfolio(request):
 
 def market(request):
     outcomes_list = []
+    market = None
+    template = loader.get_template('market.html')
     if request.GET:
         market = request.GET['m']
         outcomes_list = Outcome.objects.order_by('-outcome_date').filter(market=market)
@@ -25,7 +27,6 @@ def market(request):
             market = Market.objects.get(pk=market)
         except django.core.exceptions.ObjectDoesNotExist:
             market = []
-        template = loader.get_template('market.html')
     context = {
         'outcomes_list': outcomes_list,
         'market': market,
