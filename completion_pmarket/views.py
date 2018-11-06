@@ -16,7 +16,13 @@ def portfolio(request):
     pass
 
 def market(request):
-    pass
+    market = request.GET['market']
+    outcomes_list = Outcome.objects.order_by('-outcome_date')
+    template = loader.get_template('market.html')
+    context = {
+        'outcomes_list': outcomes_list,
+    }
+    return HttpResponse(template.render(context, request))
 
 def outcome(request):
     pass

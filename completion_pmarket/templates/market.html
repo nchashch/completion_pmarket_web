@@ -1,0 +1,9 @@
+{% if outcomes_list %}
+    <ul>
+    {% for outcome in outcomes_list %}
+        <li>{{ outcome.market.name }} : {{ outcome.outcome_date }} : P = {{ outcome.probability }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No outcomes are available.</p>
+{% endif %}
