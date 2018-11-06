@@ -1,3 +1,4 @@
+import django
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
@@ -20,9 +21,14 @@ def market(request):
     if request.GET:
         market = request.GET['m']
         outcomes_list = Outcome.objects.order_by('-outcome_date').filter(market=market)
-    template = loader.get_template('market.html')
+        try:
+            market = Market.objects.get(pk=market)
+        except django.core.exceptions.ObjectDoesNotExist:
+            market = []
+        template = loader.get_template('market.html')
     context = {
         'outcomes_list': outcomes_list,
+        'market': market,
     }
     return HttpResponse(template.render(context, request))
 
