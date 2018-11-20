@@ -5,6 +5,20 @@
     <p>Outcome date: {{ outcome.outcome_date }}</p>
     <p>Outstanding: {{ outcome.outstanding }}</p>
     <p>Probability: {{ outcome.probability }}</p>
+    <form action="/buy", method="post">
+        {% csrf_token %}
+        {{ form }}
+        <label for="buy">Amount: </label>
+        <input id="buy" type="text" name="buy" value="">
+        <input type="submit" value="Buy">
+    </form>
+    <form action="/sell", method="post">
+        {% csrf_token %}
+        {{ form }}
+        <label for="sell">Amount: </label>
+        <input id="sell" type="text" name="sell" value="">
+        <input type="submit" value="Sell">
+    </form>
 {% else %}
     <p>Outcome doesn't exist.</p>
 {% endif %}

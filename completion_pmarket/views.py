@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from .models import Market, Outcome
+from .forms import BuyForm, SellForm
 from datetime import datetime
 
 def create_market(name, b, number_of_outcomes, start_date, end_date):
@@ -56,7 +57,51 @@ def outcome(request):
     return HttpResponse(template.render(context, request))
 
 def position(request):
-    pass
+    context = {}
+    template = loader.get_template('position.html')
+    return HttpResponse(template.render(context, request))
 
+# TODO: Store orders in database
 def order(request):
+    context = {
+        'operation': 'Buy',
+        'amount': 0,
+        'outcome_name': 'STUB',
+        'market': 'STUB',
+        'cost': 0,
+        'datetime': datetime.now(),
+    }
+    template = loader.get_template('position.html')
+    return HttpResponse(template.render(context, request))
+
+def buy(request):
+    amount = 0
+    cost = 0
+    context = {
+        'operation': 'Buy',
+        'amount': amount,
+        'cost': cost,
+        'outcome_name': 'STUB',
+        'market': 'STUB',
+        'datetime': datetime.now(),
+    }
+    template = loader.get_template('order.html')
+    return HttpResponse(template.render(context, request))
+
+def sell(request):
+    amount = 0
+    cost = 0
+    context = {
+        'operation': 'Sell',
+        'amount': amount,
+        'cost': cost,
+        'outcome_name': 'STUB',
+        'market': 'STUB',
+        'datetime': datetime.now(),
+    }
+    template = loader.get_template('order.html')
+    return HttpResponse(template.render(context, request))
+
+
+def resolve_market(request):
     pass
