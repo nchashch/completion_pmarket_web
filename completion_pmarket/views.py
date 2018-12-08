@@ -80,7 +80,11 @@ def outcome(request):
     return HttpResponse(template.render(context, request))
 
 def position(request):
-    context = {}
+    position_pk = request.GET['pk']
+    position = Position.objects.get(pk=position_pk)
+    context = {
+        'position': position,
+    }
     template = loader.get_template('position.html')
     return HttpResponse(template.render(context, request))
 
