@@ -32,6 +32,8 @@ def market(request):
     if request.GET:
         market = request.GET['pk']
         outcomes_list = Outcome.objects.order_by('-outcome_date').filter(market=market)
+        for o in outcomes_list:
+            o.percent = o.probability * 100
         try:
             market = Market.objects.get(pk=market)
         except django.core.exceptions.ObjectDoesNotExist:
