@@ -1,4 +1,5 @@
 <h1><a href="/">Markets</a></h1>
+<h1>Portfolios</h1>
 {% if portfolio %}
 <p>Portfolio: {{ portfolio.name }}</p>
 <p>Owner: {{ portfolio.user.username }}</p>
@@ -8,8 +9,10 @@
     {% for position in positions %}
     <li>
         <a href="/position?pk={{ position.pk }}">
-            <p>{{ position }}</p>
+            <h2>{{ position.outcome.market.name }} : {{ position.outcome.outcome_date }}</h2>
         </a>
+        <p>Volume: {{ position.volume }}</p>
+        <p>Probability: {{ position.outcome.percent|floatformat:2 }}%</p>
     </li>
     {% endfor %}
 </ul>

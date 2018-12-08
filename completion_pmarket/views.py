@@ -32,6 +32,8 @@ def portfolio(request):
     if portfolio:
         portfolio = portfolio[0]
     positions = Position.objects.all().filter(portfolio=portfolio)
+    for p in positions:
+        p.outcome.percent = p.outcome.probability * 100
     context = {
         'portfolio': portfolio,
         'positions': positions,

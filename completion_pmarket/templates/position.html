@@ -1,5 +1,15 @@
-<h1><a href="/portfolio">Portfolio</a></h1>
-<p>Outcome: {{ position.outcome }}</p>
-<p>Portfolio: {{ position.portfolio }}</p>
+<h1><a href="/">Markets</a></h1>
+<h1><a href="/portfolio">Portfolios</a></h1>
+<p>
+    Outcome:
+    <a href="/outcome?pk={{ position.outcome.pk }}">
+    {{ position.outcome.outcome_date }}
+    </a>
+</p>
+<p>Portfolio:
+    <a href="/portfolio?pk={{ position.portfolio.pk }}">
+    {{ position.portfolio.name }}
+    </a>
+</p>
 <p>Volume: {{ position.volume }}</p>
 <p>Active: {{ position.active }}</p>

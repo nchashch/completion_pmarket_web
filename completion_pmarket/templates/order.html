@@ -1,6 +1,6 @@
 <h1><a href="/">Markets</a></h1>
-<h1><a href="/portfolio">Portfolio</a></h1>
+<h1><a href="/portfolio">Portfolios</a></h1>
 <h1><a href="/market?pk={{ market.pk }}">{{ market.name }}</a></h1>
 <h2><a href="/outcome?pk={{ outcome.pk }}">Outcome: {{ outcome.outcome_date }}</a></h2>
 <!-- <h1><a href="/market?pk={{ outcome.market.pk }}"> {{ outcome.market.name }}</a></h1> -->
-<p>{{ operation }} {{ amount }} of {{ outcome.outcome_date }} for ${{ cost }} in market {{ market.name }} at {{ datetime }}.</p>
+<p>{{ operation }} {{ amount }} of {{ outcome.outcome_date }} for ${{ cost|floatformat:2 }} in market {{ market.name }} at {{ datetime }}.</p>
