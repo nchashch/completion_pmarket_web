@@ -1,5 +1,7 @@
 import math
 import django
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
@@ -24,7 +26,14 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 def portfolio(request):
-    pass
+    template = loader.get_template('portfolio.html')
+    username = request.user.username
+    user_pk = request.user.pk
+    context = {
+        'username': username,
+        'user_pk': user_pk
+    }
+    return HttpResponse(template.render(context, request))
 
 def market(request):
     outcomes_list = []

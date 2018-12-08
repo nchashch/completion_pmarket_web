@@ -7,6 +7,5 @@ urlpatterns = [
     path('market', views.market, name='market'),
     path('outcome', views.outcome, name='outcome'),
     path('order', views.order, name='order'),
-    # path('buy', views.buy, name='buy'),
-    # path('sell', views.sell, name='sell'),
+    path('portfolio', views.portfolio, name='portfolio')
 ]
