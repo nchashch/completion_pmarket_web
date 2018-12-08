@@ -2,7 +2,7 @@
 {% if outcome %}
 
     <h1><a href="/market?pk={{ outcome.market.pk }}"> {{ outcome.market.name }}</a></h1>
-    <p>Outcome date: {{ outcome.outcome_date }}</p>
+    <h>Outcome date: {{ outcome.outcome_date }}</p>
     <p>Outstanding: {{ outcome.outstanding }}</p>
     <p>Probability: {{ outcome.probability|floatformat:3 }}</p>
     <form action="/order", method="post">

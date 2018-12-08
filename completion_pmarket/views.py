@@ -42,7 +42,6 @@ def market(request):
     context = {
         'outcomes_list': outcomes_list,
         'market': market,
-        'sum': sum((o.probability for o in outcomes_list))
     }
     return HttpResponse(template.render(context, request))
 

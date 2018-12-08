@@ -9,14 +9,13 @@
     {% for outcome in outcomes_list %}
         <li>
             <a href="/outcome?pk={{ outcome.pk }}">
-                <div>Outcome date: {{ outcome.outcome_date }}</div>
-                <div>Outstanding: {{ outcome.outstanding }}</div>
-                <div align="left">Probability: {{ outcome.percent|floatformat:2 }}%</div>
+                <div><h2>Outcome: {{ outcome.outcome_date }}</h2></div>
             </a>
+            <div>Outstanding: {{ outcome.outstanding }}</div>
+            <div align="left">Probability: {{ outcome.percent|floatformat:2 }}%</div>
         </li>
     {% endfor %}
     </ul>
-    <p>sum: {{ sum|floatformat:7 }}</p>
 {% else %}
     <p>No outcomes are available.</p>
 {% endif %}
