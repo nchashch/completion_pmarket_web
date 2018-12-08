@@ -34,4 +34,5 @@ class Order(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     position = models.ForeignKey(Position, on_delete=models.CASCADE, null=True)
     volume = models.IntegerField(default=0)
+    timestamp = models.DateTimeField('timestamp')
     executed = models.BooleanField(default=False)
