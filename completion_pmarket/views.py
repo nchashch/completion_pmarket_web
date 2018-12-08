@@ -122,6 +122,7 @@ def order(request):
         operation = 'Sell'
         outcome.outstanding -= amount
     outcome.save()
+    outcome.old_percent = outcome.probability * 100
     outcomes = Outcome.objects.all().filter(market=market.pk)
     new_amounts = [o.outstanding for o in outcomes]
     cost = cost_function(b, new_amounts) - cost_function(b, old_amounts)
@@ -129,6 +130,8 @@ def order(request):
     for o, p in zip(outcomes, probs):
         o.probability = p
         o.save()
+        if o.pk == outcome.pk:
+            outcome.new_percent = o.probability * 100
     context = {
         'operation': operation,
         'amount': amount,
