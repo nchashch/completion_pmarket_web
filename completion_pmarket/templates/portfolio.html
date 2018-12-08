@@ -1,6 +1,7 @@
 <h1><a href="/">Markets</a></h1>
-<p>Username: {{ username }}</p>
-<p>User id: {{ user_pk }}</p>
+{% if portfolio %}
+<p>Portfolio: {{ portfolio.name }}</p>
+<p>Owner: {{ portfolio.user.username }}</p>
 {% if positions %}
 <h1>Positions</h1>
 <ul>
@@ -14,4 +15,7 @@
 </ul>
 {% else %}
 <p>There are no positions.</p>
+{% endif %}
+{% else %}
+<p>There are no portfolios.</p>
 {% endif %}

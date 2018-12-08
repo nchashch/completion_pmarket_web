@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
-from .models import Market, Outcome, Position
+from .models import Market, Outcome, Position, Portfolio
 from .forms import BuyForm, SellForm
 from datetime import datetime
 
@@ -27,12 +27,13 @@ def index(request):
 
 def portfolio(request):
     template = loader.get_template('portfolio.html')
-    username = request.user.username
     user_pk = request.user.pk
-    positions = Position.objects.all()
+    portfolio = Portfolio.objects.all().filter(user=user_pk)
+    if portfolio:
+        portfolio = portfolio[0]
+    positions = Position.objects.all().filter(portfolio=portfolio)
     context = {
-        'username': username,
-        'user_pk': user_pk,
+        'portfolio': portfolio,
         'positions': positions,
     }
     return HttpResponse(template.render(context, request))

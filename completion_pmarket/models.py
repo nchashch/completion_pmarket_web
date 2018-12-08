@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 # Private
 class Portfolio(models.Model):
     name = models.CharField(max_length=256)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE, default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 # Public
 class Market(models.Model):
