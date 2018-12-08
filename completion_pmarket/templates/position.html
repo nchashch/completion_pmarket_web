@@ -12,4 +12,6 @@
     </a>
 </p>
 <p>Volume: {{ position.volume }}</p>
+<p>Probability: {{ position.outcome.percent|floatformat:2 }}%</p>
+<p>Expected value: ${{ position.expected_value|floatformat:2 }}</p>
 <p>Active: {{ position.active }}</p>

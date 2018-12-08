@@ -34,6 +34,7 @@ def portfolio(request):
     positions = Position.objects.all().filter(portfolio=portfolio)
     for p in positions:
         p.outcome.percent = p.outcome.probability * 100
+        p.expected_value = p.outcome.probability * p.volume
     context = {
         'portfolio': portfolio,
         'positions': positions,
@@ -86,6 +87,8 @@ def outcome(request):
 def position(request):
     position_pk = request.GET['pk']
     position = Position.objects.get(pk=position_pk)
+    position.outcome.percent = position.outcome.probability * 100
+    position.expected_value = position.outcome.probability * position.volume
     context = {
         'position': position,
     }
