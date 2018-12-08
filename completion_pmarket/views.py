@@ -66,6 +66,7 @@ def outcome(request):
         try:
             outcome = Outcome.objects.get(pk=outcome)
             market = Market.objects.get(pk=outcome.market.pk)
+            outcome.percent = outcome.probability * 100
         except django.core.exceptions.ObjectDoesNotExist:
             outcome = []
             market = []
