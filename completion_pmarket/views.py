@@ -48,11 +48,20 @@ def outcome(request):
         outcome = request.GET['pk']
         try:
             outcome = Outcome.objects.get(pk=outcome)
+            market = Market.objects.get(pk=outcome.market.pk)
         except django.core.exceptions.ObjectDoesNotExist:
             outcome = []
+            market = []
     template = loader.get_template('outcome.html')
+    request.session['market'] = market.pk
+    request.session['outcome'] = outcome.pk
+    buy_form = BuyForm()
+    sell_form = SellForm()
     context = {
+        'buy_form': buy_form,
+        'sell_form': sell_form,
         'outcome': outcome,
+        'market': market,
     }
     return HttpResponse(template.render(context, request))
 
@@ -61,42 +70,29 @@ def position(request):
     template = loader.get_template('position.html')
     return HttpResponse(template.render(context, request))
 
-# TODO: Store orders in database
 def order(request):
-    context = {
-        'operation': 'Buy',
-        'amount': 0,
-        'outcome_name': 'STUB',
-        'market': 'STUB',
-        'cost': 0,
-        'datetime': datetime.now(),
-    }
-    template = loader.get_template('position.html')
-    return HttpResponse(template.render(context, request))
-
-def buy(request):
     amount = 0
     cost = 0
+    market_pk = request.session['market']
+    outcome_pk = request.session['outcome']
+    market = Market.objects.get(pk=market_pk)
+    outcome = Outcome.objects.get(pk=outcome_pk)
+    operation = 'Invalid'
+    if request.method == 'POST':
+        sell_form = SellForm(request.POST)
+        buy_form = BuyForm(request.POST)
+        if sell_form.is_valid():
+            amount = sell_form.cleaned_data['amount']
+    if 'buy' in request.POST:
+        operation = 'Buy'
+    elif 'sell' in request.POST:
+        operation = 'Sell'
     context = {
-        'operation': 'Buy',
+        'operation': operation,
         'amount': amount,
         'cost': cost,
-        'outcome_name': 'STUB',
-        'market': 'STUB',
-        'datetime': datetime.now(),
-    }
-    template = loader.get_template('order.html')
-    return HttpResponse(template.render(context, request))
-
-def sell(request):
-    amount = 0
-    cost = 0
-    context = {
-        'operation': 'Sell',
-        'amount': amount,
-        'cost': cost,
-        'outcome_name': 'STUB',
-        'market': 'STUB',
+        'outcome': outcome,
+        'market': market,
         'datetime': datetime.now(),
     }
     template = loader.get_template('order.html')

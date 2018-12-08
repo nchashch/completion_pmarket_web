@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('market', views.market, name='market'),
     path('outcome', views.outcome, name='outcome'),
-    path('buy', views.buy, name='buy'),
-    path('sell', views.sell, name='sell'),
+    path('order', views.order, name='order'),
+    # path('buy', views.buy, name='buy'),
+    # path('sell', views.sell, name='sell'),
 ]
