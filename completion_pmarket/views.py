@@ -40,6 +40,7 @@ def market(request):
     context = {
         'outcomes_list': outcomes_list,
         'market': market,
+        'sum': sum((o.probability for o in outcomes_list))
     }
     return HttpResponse(template.render(context, request))
 
@@ -76,7 +77,7 @@ def cost_function(b, amounts):
 
 def probabilities(b, amounts):
     s = sum((math.e ** (a/b) for a in amounts))
-    return [math.e ** (a/b) / s for a in amounts]
+    return [(math.e ** (a/b)) / s for a in amounts]
 
 def order(request):
     amount = 0
@@ -92,7 +93,7 @@ def order(request):
             amount = sell_form.cleaned_data['amount']
 
     b = market.b
-    outcomes = Outcome.objects.all()
+    outcomes = Outcome.objects.all().filter(market=market.pk)
     old_amounts = (o.outstanding for o in outcomes)
     new_amounts = old_amounts
     if 'buy' in request.POST:
@@ -102,7 +103,7 @@ def order(request):
         operation = 'Sell'
         outcome.outstanding -= amount
     outcome.save()
-    outcomes = Outcome.objects.all()
+    outcomes = Outcome.objects.all().filter(market=market.pk)
     new_amounts = [o.outstanding for o in outcomes]
     cost = cost_function(b, new_amounts) - cost_function(b, old_amounts)
     probs = probabilities(b, new_amounts)
