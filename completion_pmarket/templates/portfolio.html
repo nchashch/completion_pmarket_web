@@ -1,3 +1,17 @@
 <h1><a href="/">Markets</a></h1>
-<h1>Username: {{ username }}</h1>
-<h1>User id: {{ user_pk }}</h1>
+<p>Username: {{ username }}</p>
+<p>User id: {{ user_pk }}</p>
+{% if positions %}
+<h1>Positions</h1>
+<ul>
+    {% for position in positions %}
+    <li>
+        <a href="/position?pk={{ position.pk }}">
+            <p>{{ position }}</p>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>There are no positions.</p>
+{% endif %}
