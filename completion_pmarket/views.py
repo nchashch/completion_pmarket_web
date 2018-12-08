@@ -1,3 +1,4 @@
+import math
 import django
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -70,9 +71,15 @@ def position(request):
     template = loader.get_template('position.html')
     return HttpResponse(template.render(context, request))
 
+def cost_function(b, amounts):
+    return b * math.log(sum((math.e ** (a / b) for a in amounts)))
+
+def probabilities(b, amounts):
+    s = sum((math.e ** (a/b) for a in amounts))
+    return [math.e ** (a/b) / s for a in amounts]
+
 def order(request):
     amount = 0
-    cost = 0
     market_pk = request.session['market']
     outcome_pk = request.session['outcome']
     market = Market.objects.get(pk=market_pk)
@@ -83,10 +90,25 @@ def order(request):
         buy_form = BuyForm(request.POST)
         if sell_form.is_valid():
             amount = sell_form.cleaned_data['amount']
+
+    b = market.b
+    outcomes = Outcome.objects.all()
+    old_amounts = (o.outstanding for o in outcomes)
+    new_amounts = old_amounts
     if 'buy' in request.POST:
         operation = 'Buy'
+        outcome.outstanding += amount
     elif 'sell' in request.POST:
         operation = 'Sell'
+        outcome.outstanding -= amount
+    outcome.save()
+    outcomes = Outcome.objects.all()
+    new_amounts = [o.outstanding for o in outcomes]
+    cost = cost_function(b, new_amounts) - cost_function(b, old_amounts)
+    probs = probabilities(b, new_amounts)
+    for o, p in zip(outcomes, probs):
+        o.probability = p
+        o.save()
     context = {
         'operation': operation,
         'amount': amount,
