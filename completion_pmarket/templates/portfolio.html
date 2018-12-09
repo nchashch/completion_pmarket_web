@@ -3,6 +3,7 @@
 {% if portfolio %}
 <p>Portfolio: {{ portfolio.name }}</p>
 <p>Owner: {{ portfolio.user.username }}</p>
+<p>Cash: ${{ portfolio.cash|floatformat:2 }}</p>
 {% if positions %}
 <h1>Positions</h1>
 <ul>

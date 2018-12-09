@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
-from .models import Market, Outcome, Position, Portfolio
+from .models import Market, Outcome, Position, Portfolio, Order
 from .forms import BuyForm, SellForm
 from datetime import datetime
 
@@ -32,6 +32,7 @@ def portfolio(request):
     if portfolio:
         portfolio = portfolio[0]
     positions = Position.objects.all().filter(portfolio=portfolio)
+    positions = [p for p in positions if p.volume != 0]
     for p in positions:
         p.outcome.percent = p.outcome.probability * 100
         p.expected_value = p.outcome.probability * p.volume
@@ -117,6 +118,7 @@ def order(request):
         if sell_form.is_valid():
             amount = sell_form.cleaned_data['amount']
 
+
     b = market.b
     outcomes = Outcome.objects.all().filter(market=market.pk)
     old_amounts = (o.outstanding for o in outcomes)
@@ -132,6 +134,31 @@ def order(request):
     outcomes = Outcome.objects.all().filter(market=market.pk)
     new_amounts = [o.outstanding for o in outcomes]
     cost = cost_function(b, new_amounts) - cost_function(b, old_amounts)
+    portfolio = Portfolio.objects.get(user=request.user.pk)
+    portfolio.cash -= cost
+    portfolio.save()
+
+    position = Position.objects.all().filter(outcome=outcome, portfolio=portfolio)
+    if position:
+        position = position[0]
+    else:
+        position = Position()
+        position.outcome = outcome
+        position.portfolio = portfolio
+    order = Order()
+    order.outcome = outcome
+    order.portfolio = portfolio
+    order.position = position
+    if operation == 'Buy':
+        order.volume = amount
+        position.volume += amount
+    elif operation == 'Sell':
+        order.volume = -amount
+        position.volume -= amount
+    order.timestamp = datetime.now()
+    position.save()
+    order.save()
+
     probs = probabilities(b, new_amounts)
     for o, p in zip(outcomes, probs):
         o.probability = p
@@ -144,7 +171,7 @@ def order(request):
         'cost': cost,
         'outcome': outcome,
         'market': market,
-        'datetime': datetime.now(),
+        'datetime': order.timestamp,
     }
     template = loader.get_template('order.html')
     return HttpResponse(template.render(context, request))

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Portfolio(models.Model):
     name = models.CharField(max_length=256)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    cash = models.FloatField(default=0)
 
 # Public
 class Market(models.Model):
@@ -26,7 +27,6 @@ class Position(models.Model):
     outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     volume = models.IntegerField(default=0)
-    active = models.BooleanField(default=True)
 
 # Private
 class Order(models.Model):
@@ -35,4 +35,3 @@ class Order(models.Model):
     position = models.ForeignKey(Position, on_delete=models.CASCADE, null=True)
     volume = models.IntegerField(default=0)
     timestamp = models.DateTimeField('timestamp')
-    executed = models.BooleanField(default=False)
