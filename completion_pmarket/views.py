@@ -102,6 +102,8 @@ def probabilities(b, amounts):
     s = sum((math.e ** (a/b) for a in amounts))
     return [(math.e ** (a/b)) / s for a in amounts]
 
+# TODO: Update positions
+# TODO: Add orders
 def order(request):
     amount = 0
     market_pk = request.session['market']
@@ -146,7 +148,6 @@ def order(request):
     }
     template = loader.get_template('order.html')
     return HttpResponse(template.render(context, request))
-
 
 def resolve_market(request):
     pass
