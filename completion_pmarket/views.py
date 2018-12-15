@@ -1,13 +1,13 @@
 import math
 import django
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from .models import Market, Outcome, Position, Portfolio, Order
-from .forms import BuyForm, SellForm
+from .forms import BuyForm, SellForm, LoginForm
 from datetime import datetime
 
 def create_market(name, b, number_of_outcomes, start_date, end_date):
@@ -180,8 +180,23 @@ def order(request):
 def resolve_market(request):
     pass
 
-def login(request):
-    pass
+def login_user(request):
+    form = LoginForm(request.POST)
+    if form.is_valid():
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password"]
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect('login')
+            else:
+                return redirect('login')
+    template = loader.get_template('login.html')
+    context = {
+        'form': form,
+    }
+    return HttpResponse(template.render(context, request))
 
 def signup(request):
     template = loader.get_template('signup.html')
@@ -189,8 +204,7 @@ def signup(request):
         f = UserCreationForm(request.POST)
         if f.is_valid():
             f.save()
-            # messages.success(request, 'Account created successfully')
-            return redirect('signup')
+            return redirect('login')
     else:
         f = UserCreationForm()
     context = {
