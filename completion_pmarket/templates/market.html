@@ -4,6 +4,7 @@
     <p>Number of outcomes: {{ market.number_of_outcomes }}</p>
     <p>Start date: {{ market.start_date }}</p>
     <p>End date: {{ market.end_date }}</p>
+    {% if not market.resolved %}
     <ul>
     {% for outcome in outcomes_list %}
         <li>
@@ -12,9 +13,24 @@
             </a>
             <div>Outstanding: {{ outcome.outstanding }}</div>
             <div align="left">Probability: {{ outcome.percent|floatformat:2 }}%</div>
+            {% if user.is_superuser%}
+            <form action="/resolve_outcome" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="pk" value="{{ outcome.pk }}"/>
+                <button type="submit">Resolve</button>
+            </form>
+            {% endif %}
         </li>
     {% endfor %}
     </ul>
+    {% else %}
+    <h1>This market was resolved:</h1>
+    {% for outcome in outcomes_list %}
+    {% if outcome.winning%}
+    <h2 href="/outcome?pk={{ outcome.pk }}">{{ outcome.outcome_date }}</h2>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
 {% else %}
     <p>No outcomes are available.</p>
 {% endif %}

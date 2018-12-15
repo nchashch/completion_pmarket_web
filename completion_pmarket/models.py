@@ -14,6 +14,7 @@ class Market(models.Model):
     number_of_outcomes = models.IntegerField(default=1)
     start_date = models.DateField('start date')
     end_date = models.DateField('end date')
+    resolved = models.BooleanField(default=False)
 
 # Public
 class Outcome(models.Model):
@@ -21,10 +22,12 @@ class Outcome(models.Model):
     outcome_date = models.DateField('outcome date')
     outstanding = models.IntegerField(default=0)
     probability = models.FloatField(default=0.0)
+    winning = models.BooleanField(default=False)
 
 # Private
 class Position(models.Model):
     outcome = models.ForeignKey(Outcome, on_delete=models.CASCADE)
+    market = models.ForeignKey(Market, on_delete=models.CASCADE)
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     volume = models.IntegerField(default=0)
 

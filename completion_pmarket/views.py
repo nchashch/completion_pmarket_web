@@ -136,6 +136,7 @@ def order(request):
     else:
         position = Position()
         position.outcome = outcome
+        position.market = outcome.market
         position.portfolio = portfolio
     order = Order()
     order.outcome = outcome
@@ -204,8 +205,38 @@ def create_market(request):
     template = loader.get_template('create_market.html')
     return HttpResponse(template.render(context, request))
 
-def resolve_market(request):
-    pass
+def resolve_outcome(request):
+    if request.user.is_superuser:
+        if request.method == 'POST':
+            outcome_pk = int(request.POST['pk'])
+            outcome = Outcome.objects.get(pk=outcome_pk)
+
+            market = outcome.market
+            if market.resolved:
+                return redirect('/')
+            market.resolved = True
+            market.save()
+
+            outcome.winning = True
+            outcome.save()
+            outcome_positions = Position.objects.all().filter(outcome=outcome)
+            positions = Position.objects.all().filter(market=market)
+
+            outcomes = Outcome.objects.all().filter(market=market)
+            amounts = [o.outstanding for o in outcomes]
+            total_cash = cost_function(market.b, amounts)
+
+            total_winning = (op.volume for op in outcome_positions)
+            total_winning = sum(total_winning)
+
+            for op in outcome_positions:
+                share = op.volume/total_winning
+                portfolio = op.portfolio
+                portfolio.cash += share * total_cash
+                portfolio.save()
+            return redirect('/outcome?pk={}'.format(outcome_pk))
+    else:
+        return redirect('/')
 
 def login_user(request):
     form = LoginForm(request.POST)
