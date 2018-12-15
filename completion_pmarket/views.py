@@ -186,7 +186,7 @@ def create_market(request):
             )
             market.save()
             base = start_date
-            date_list = [base + datetime.timedelta(days=x) for x in range(0, number_of_outcomes)]
+            date_list = [base + datetime.timedelta(days=x) for x in range(0, number_of_outcomes+1)]
             P = 1/number_of_outcomes
             for date in date_list:
                 outcome = Outcome(
