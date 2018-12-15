@@ -27,7 +27,7 @@
     <h1>This market was resolved:</h1>
     {% for outcome in outcomes_list %}
     {% if outcome.winning%}
-    <h2 href="/outcome?pk={{ outcome.pk }}">{{ outcome.outcome_date }}</h2>
+    <h2><a href="/outcome?pk={{ outcome.pk }}">{{ outcome.outcome_date }}</a></h2>
     {% endif %}
     {% endfor %}
     {% endif %}
