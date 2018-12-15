@@ -1,5 +1,8 @@
 {% if user.is_authenticated %}
 <h1><a href="/portfolio">Portfolio</a></h1>
+{% if user.is_superuser %}
+<h1><a href="/create_market">Create market</a></h1>
+{% endif %}
 <p><a href="/logout">Log out</a></p>
 {% else %}
 <h1><a href="/signup">Sign up</a></h1>
