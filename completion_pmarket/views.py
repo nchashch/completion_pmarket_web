@@ -1,8 +1,9 @@
 import math
 import django
 from django.contrib.auth import authenticate
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from .models import Market, Outcome, Position, Portfolio, Order
@@ -184,5 +185,15 @@ def login(request):
 
 def signup(request):
     template = loader.get_template('signup.html')
-    context = {}
+    if request.method == 'POST':
+        f = UserCreationForm(request.POST)
+        if f.is_valid():
+            f.save()
+            # messages.success(request, 'Account created successfully')
+            return redirect('signup')
+    else:
+        f = UserCreationForm()
+    context = {
+        "form": f,
+    }
     return HttpResponse(template.render(context, request))
