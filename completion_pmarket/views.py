@@ -30,8 +30,6 @@ def portfolio(request):
     template = loader.get_template('portfolio.html')
     user_pk = request.user.pk
     portfolio = Portfolio.objects.get(user=user_pk)
-    if portfolio:
-        portfolio = portfolio[0]
     positions = Position.objects.all().filter(portfolio=portfolio)
     positions = [p for p in positions if p.volume != 0]
     for p in positions:
