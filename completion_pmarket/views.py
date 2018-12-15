@@ -210,22 +210,21 @@ def resolve_outcome(request):
         if request.method == 'POST':
             outcome_pk = int(request.POST['pk'])
             outcome = Outcome.objects.get(pk=outcome_pk)
-
             market = outcome.market
             if market.resolved:
                 return redirect('/')
             market.resolved = True
             market.save()
-
             outcome.winning = True
             outcome.save()
             outcome_positions = Position.objects.all().filter(outcome=outcome)
             positions = Position.objects.all().filter(market=market)
-
+            for p in positions:
+                p.closed = True
+                p.save()
             outcomes = Outcome.objects.all().filter(market=market)
             amounts = [o.outstanding for o in outcomes]
             total_cash = cost_function(market.b, amounts)
-
             total_winning = (op.volume for op in outcome_positions)
             total_winning = sum(total_winning)
 

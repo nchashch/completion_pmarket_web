@@ -7,6 +7,7 @@
 <h1>Positions</h1>
 <ul>
     {% for position in positions %}
+    {% if not position.closed %}
     <li>
         <a href="/position?pk={{ position.pk }}">
             <h2>{{ position.outcome.market.name }} : {{ position.outcome.outcome_date }}</h2>
@@ -15,6 +16,7 @@
         <p>Probability: {{ position.outcome.percent|floatformat:2 }}%</p>
         <p>Expected value: ${{ position.expected_value|floatformat:2 }}</p>
     </li>
+    {% endif %}
     {% endfor %}
 </ul>
 {% else %}

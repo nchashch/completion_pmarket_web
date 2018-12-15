@@ -30,6 +30,7 @@ class Position(models.Model):
     market = models.ForeignKey(Market, on_delete=models.CASCADE)
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     volume = models.IntegerField(default=0)
+    closed = models.BooleanField(default=False)
 
 # Private
 class Order(models.Model):
