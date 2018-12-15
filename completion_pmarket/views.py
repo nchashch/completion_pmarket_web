@@ -28,7 +28,7 @@ def index(request):
 def portfolio(request):
     template = loader.get_template('portfolio.html')
     user_pk = request.user.pk
-    portfolio = Portfolio.objects.all().filter(user=user_pk)
+    portfolio = Portfolio.objects.get(user=user_pk)
     if portfolio:
         portfolio = portfolio[0]
     positions = Position.objects.all().filter(portfolio=portfolio)
@@ -178,3 +178,11 @@ def order(request):
 
 def resolve_market(request):
     pass
+
+def login(request):
+    pass
+
+def signup(request):
+    template = loader.get_template('signup.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
