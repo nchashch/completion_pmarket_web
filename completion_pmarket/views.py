@@ -187,7 +187,7 @@ def login_user(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return redirect('login')
+                return redirect('/')
             else:
                 return redirect('login')
     template = loader.get_template('login.html')
@@ -201,7 +201,12 @@ def signup(request):
     if request.method == 'POST':
         f = UserCreationForm(request.POST)
         if f.is_valid():
-            f.save()
+            user = f.save()
+            portfolio = Portfolio()
+            portfolio.user = user
+            portfolio.name = user.username + '_portfolio'
+            portfolio.cash = 0
+            portfolio.save()
             return redirect('login')
     else:
         f = UserCreationForm()
