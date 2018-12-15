@@ -1,6 +1,6 @@
 import math
 import django
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -207,10 +207,15 @@ def signup(request):
             portfolio.name = user.username + '_portfolio'
             portfolio.cash = 0
             portfolio.save()
-            return redirect('login')
+            login(request, user)
+            return redirect('/')
     else:
         f = UserCreationForm()
     context = {
         "form": f,
     }
     return HttpResponse(template.render(context, request))
+
+def logout_user(request):
+    logout(request)
+    return redirect('/')

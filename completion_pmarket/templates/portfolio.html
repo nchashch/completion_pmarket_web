@@ -1,5 +1,4 @@
-<h1><a href="/">Markets</a></h1>
-<h1>Portfolios</h1>
+{% include 'base.html' %}
 {% if portfolio %}
 <p>Portfolio: {{ portfolio.name }}</p>
 <p>Owner: {{ portfolio.user.username }}</p>
