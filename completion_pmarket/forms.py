@@ -8,6 +8,12 @@ class BuyForm(forms.Form):
 class SellForm(forms.Form):
     amount = forms.DecimalField(label='Amount')
 
+class CreateMarketForm(forms.Form):
+    name = forms.CharField()
+    b = forms.DecimalField(label='b')
+    start_date = forms.DateField()
+    end_date = forms.DateField()
+
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)

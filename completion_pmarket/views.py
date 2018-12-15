@@ -7,16 +7,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from .models import Market, Outcome, Position, Portfolio, Order
-from .forms import BuyForm, SellForm, LoginForm
-from datetime import datetime
+from .forms import BuyForm, SellForm, LoginForm, CreateMarketForm
+import datetime
 
-def create_market(name, b, number_of_outcomes, start_date, end_date):
-    market = Market(name = name, b = b, number_of_outcomes = number_of_outcomes, start_date = start_date, end_date = end_date)
-    market.save()
-    for _ in range(number_of_outcomes):
-        P = 1/number_of_outcomes
-        outcome = Outcome(market = market, outcome_date = datetime.now(), outstanding = 0, probability = P)
-        outcome.save()
 
 def index(request):
     markets_list = Market.objects.order_by('-start_date')[:5]
@@ -46,7 +39,7 @@ def market(request):
     market = None
     if request.GET:
         market = request.GET['pk']
-        outcomes_list = Outcome.objects.order_by('-outcome_date').filter(market=market)
+        outcomes_list = Outcome.objects.order_by('outcome_date').filter(market=market)
         for o in outcomes_list:
             o.percent = o.probability * 100
         try:
@@ -154,7 +147,7 @@ def order(request):
     elif operation == 'Sell':
         order.volume = -amount
         position.volume -= amount
-    order.timestamp = datetime.now()
+    order.timestamp = datetime.datetime.now()
     position.save()
     order.save()
 
@@ -175,14 +168,50 @@ def order(request):
     template = loader.get_template('order.html')
     return HttpResponse(template.render(context, request))
 
+def create_market(request):
+    if request.method == 'POST':
+        form = CreateMarketForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            b = form.cleaned_data['b']
+            start_date = form.cleaned_data['start_date']
+            end_date = form.cleaned_data['end_date']
+            number_of_outcomes = (end_date - start_date).days
+            market = Market(
+                name = name,
+                b = b,
+                number_of_outcomes = number_of_outcomes,
+                start_date = start_date,
+                end_date = end_date
+            )
+            market.save()
+            base = start_date
+            date_list = [base + datetime.timedelta(days=x) for x in range(0, number_of_outcomes)]
+            P = 1/number_of_outcomes
+            for date in date_list:
+                outcome = Outcome(
+                    market = market,
+                    outcome_date = date,
+                    outstanding = 0,
+                    probability = P)
+                outcome.save()
+            return redirect('/')
+    else:
+        form = CreateMarketForm()
+    context = {
+        'form': form,
+    }
+    template = loader.get_template('create_market.html')
+    return HttpResponse(template.render(context, request))
+
 def resolve_market(request):
     pass
 
 def login_user(request):
     form = LoginForm(request.POST)
     if form.is_valid():
-        username = form.cleaned_data["username"]
-        password = form.cleaned_data["password"]
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:

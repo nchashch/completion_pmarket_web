@@ -12,4 +12,5 @@ urlpatterns = [
     path('signup', views.signup, name='signup'),
     path('login', views.login_user, name='login'),
     path('logout', views.logout_user, name='logout'),
+    path('create_market', views.create_market, name='create_market'),
 ]
