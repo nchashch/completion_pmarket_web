@@ -141,10 +141,10 @@ def order(request):
         position.market = outcome.market
         position.portfolio = portfolio
 
-    if operation == 'Buy' and portfolio.cash < cost:
-        return redirect('/market?pk={}'.format(market.pk))
-    elif operation == 'Sell' and position.volume < amount:
-        return redirect('/market?pk={}'.format(market.pk))
+    if operation == 'Buy' and portfolio.cash < cost or amount < 0:
+        return redirect('/outcome?pk={}'.format(outcome.pk))
+    elif operation == 'Sell' and position.volume < amount or amount < 0:
+        return redirect('/outcome?pk={}'.format(outcome.pk))
     outcome.save()
     outcome.old_percent = outcome.probability * 100
     portfolio.cash -= cost
