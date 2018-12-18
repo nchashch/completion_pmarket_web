@@ -103,6 +103,7 @@ def order(request):
     outcome_pk = request.session['outcome']
     market = Market.objects.get(pk=market_pk)
     outcome = Outcome.objects.get(pk=outcome_pk)
+    portfolio = Portfolio.objects.get(user=request.user.pk)
     operation = 'Invalid'
     if request.method == 'POST':
         sell_form = SellForm(request.POST)
@@ -110,25 +111,26 @@ def order(request):
         if sell_form.is_valid():
             amount = sell_form.cleaned_data['amount']
 
+    outcomes = Outcome.objects.all().filter(market=market.pk)
+    new_outcomes = Outcome.objects.all().filter(market=market.pk)
 
     b = market.b
-    outcomes = Outcome.objects.all().filter(market=market.pk)
-    old_amounts = (o.outstanding for o in outcomes)
-    new_amounts = old_amounts
     if 'buy' in request.POST:
         operation = 'Buy'
         outcome.outstanding += amount
+        for i, o in enumerate(new_outcomes):
+            if o.pk == outcome.pk:
+                new_outcomes[i].outstanding += float(amount)
     elif 'sell' in request.POST:
         operation = 'Sell'
         outcome.outstanding -= amount
-    outcome.save()
-    outcome.old_percent = outcome.probability * 100
-    outcomes = Outcome.objects.all().filter(market=market.pk)
-    new_amounts = [o.outstanding for o in outcomes]
+        for i, o in enumerate(new_outcomes):
+            if o.pk == outcome.pk:
+                new_outcomes[i].outstanding += float(amount)
+
+    old_amounts = (o.outstanding for o in outcomes)
+    new_amounts = [o.outstanding for o in new_outcomes]
     cost = cost_function(b, new_amounts) - cost_function(b, old_amounts)
-    portfolio = Portfolio.objects.get(user=request.user.pk)
-    portfolio.cash -= cost
-    portfolio.save()
 
     position = Position.objects.all().filter(outcome=outcome, portfolio=portfolio)
     if position:
@@ -138,21 +140,31 @@ def order(request):
         position.outcome = outcome
         position.market = outcome.market
         position.portfolio = portfolio
+
+    if operation == 'Buy' and portfolio.cash < cost:
+        return redirect('/market?pk={}'.format(market.pk))
+    elif operation == 'Sell' and position.volume < amount:
+        return redirect('/market?pk={}'.format(market.pk))
+    outcome.save()
+    outcome.old_percent = outcome.probability * 100
+    portfolio.cash -= cost
+    portfolio.save()
+
     order = Order()
     order.outcome = outcome
     order.portfolio = portfolio
     order.position = position
+    order.timestamp = datetime.datetime.now()
     if operation == 'Buy':
         order.volume = amount
         position.volume += amount
     elif operation == 'Sell':
         order.volume = -amount
         position.volume -= amount
-    order.timestamp = datetime.datetime.now()
     position.save()
     order.save()
-
     probs = probabilities(b, new_amounts)
+    outcomes = Outcome.objects.all().filter(market=market)
     for o, p in zip(outcomes, probs):
         o.probability = p
         o.save()
